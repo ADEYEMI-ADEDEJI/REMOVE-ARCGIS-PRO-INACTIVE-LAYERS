@@ -1,0 +1,29 @@
+
+import arcpy
+
+# Get the current ArcGIS Pro project
+aprx = arcpy.mp.ArcGISProject("CURRENT")
+
+# Get the active map
+m = aprx.activeMap
+
+if m is None:
+    print("No active map found. Open a map in ArcGIS Pro.")
+else:
+    # Get all layers in the map
+    layers = m.listLayers()
+
+    # Store the names of inactive layers
+    inactive_layers = []
+
+    for lyr in layers:
+        # Only remove layers that are unchecked
+        if not lyr.isGroupLayer and not lyr.visible:
+            inactive_layers.append(lyr)
+
+    # Remove inactive layers
+    for lyr in inactive_layers:
+        print(f"Removing inactive layer: {lyr.name}")
+        m.removeLayer(lyr)
+
+    print(f"\nCompleted. Removed {len(inactive_layers)} inactive layers.")
